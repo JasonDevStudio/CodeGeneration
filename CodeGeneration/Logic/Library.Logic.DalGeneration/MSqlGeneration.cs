@@ -431,11 +431,22 @@ namespace Library.Logic.DalGeneration
             foreach (var item in colList)
             {
                 if (string.IsNullOrWhiteSpace(strParameter))
-                    strParameter += string.Format("		[{0}] = CASE WHEN @{1}{2} IS NOT NULL THEN @{3}{4} ELSE [{5}] END  ",
-                    item.ColumnName, criteria.SqlParameterPrefix, item.PublicVarName, criteria.SqlParameterPrefix, item.PublicVarName, item.ColumnName);
+                {
+                    if (item.IsNull)
+                        strParameter += string.Format("		[{0}] = @{1}{2} ", criteria.SqlParameterPrefix, item.PublicVarName);
+                    else
+                        strParameter += string.Format("		[{0}] = CASE WHEN @{1}{2} IS NOT NULL THEN @{1}{2} ELSE [{0}] END  ",
+                                            item.ColumnName, criteria.SqlParameterPrefix, item.PublicVarName );
+                }
                 else
-                    strParameter += string.Format(",{0}		[{1}] = CASE WHEN @{2}{3} IS NOT NULL THEN @{4}{5} ELSE [{6}] END ",
-                    Environment.NewLine, item.ColumnName, criteria.SqlParameterPrefix, item.PublicVarName, criteria.SqlParameterPrefix, item.PublicVarName, item.ColumnName);
+                {
+                    if(item.IsNull)
+                        strParameter += string.Format(",{0}		[{1}] =  @{2}{3} ",
+                            Environment.NewLine, item.ColumnName, criteria.SqlParameterPrefix, item.PublicVarName );
+                    else
+                        strParameter += string.Format(",{0}		[{1}] = CASE WHEN @{2}{3} IS NOT NULL THEN @{2}{3} ELSE [{1}] END ",
+                            Environment.NewLine, item.ColumnName, criteria.SqlParameterPrefix, item.PublicVarName );
+                }
             }
             sbSql.AppendLine(strParameter);
 

@@ -417,8 +417,8 @@ namespace Library.Facade.CodeGenerator
             sb.AppendLine();
             sb.AppendLine("                //参数添加");
             sb.AppendLine("                IList<DBParameter> parm = new List<DBParameter>();");
-            sb.AppendLine("                parm.Add(new DBParameter() { ParameterName = \"PageSize\", ParameterValue = pageSize, ParameterInOut = BaseDict.ParmIn, ParameterType = DbType.String });");
-            sb.AppendLine("                parm.Add(new DBParameter() { ParameterName = \"PageIndex\", ParameterValue = pageIndex, ParameterInOut = BaseDict.ParmIn, ParameterType = DbType.String });");
+            sb.AppendLine("                parm.Add(new DBParameter() { ParameterName = \"PagerSize\", ParameterValue = pageSize, ParameterInOut = BaseDict.ParmIn, ParameterType = DbType.String });");
+            sb.AppendLine("                parm.Add(new DBParameter() { ParameterName = \"PagerIndex\", ParameterValue = pageIndex, ParameterInOut = BaseDict.ParmIn, ParameterType = DbType.String });");
             sb.AppendLine("                parm.Add(new DBParameter() { ParameterName = \"RowCount\", ParameterInOut = BaseDict.ParmOut, ParameterType = DbType.String });");
             sb.AppendLine();
             sb.AppendLine("                //查询执行");
@@ -683,7 +683,8 @@ namespace Library.Facade.CodeGenerator
             sb.AppendLine("            try");
             sb.AppendLine("            {");
             sb.AppendLine("                //存储过程名称");
-            sb.AppendLine("                string sql = \"USP_{0}_Detele\";");
+            sb.AppendFormat("                string sql = \" USP_{0}_DELETE \" ;", criteria.TableName.ToUpper());
+            sb.AppendLine();
             sb.AppendLine();
             sb.AppendLine("                //参数添加");
             sb.AppendLine("                IList<DBParameter> parm = new List<DBParameter>();");
@@ -782,9 +783,8 @@ namespace Library.Facade.CodeGenerator
         /// <param name="IsSqlSelectAll">是否生成 SqlSelectAll</param> 
         public string TSqlCodeGeneration(out string ResultMsg, string TableName, string DataBaseType = BaseDict.SqlServerData, string DataBaseName = null,
             string SqlParameterPrefix = null, string SqlProcedurePrefix = null, string IsSqlInsertUpdate = "True", string IsSqlSelectDetail = "True", string IsSqlUpdateStatus = "True",
-            string IsSqlSelectPager = "True", string IsSqlSelectAll = "True")
-        {
-            IGeneration dal = new MSqlGeneration();
+            string IsSqlSelectPager = "True", string IsSqlSelectAll = "True", string IsSqlDelete = "True")
+        { 
             ResultMsg = string.Empty;
             var criteria = new GeneratorCriteria();
             criteria.DataBaseName = DataBaseName;
@@ -792,6 +792,8 @@ namespace Library.Facade.CodeGenerator
             criteria.SqlParameterPrefix = SqlParameterPrefix;
             criteria.DataBaseType = DataBaseType;
             criteria.SqlProcedurePrefix = SqlProcedurePrefix;
+
+            IGeneration dal = CreateInstance(criteria.DataBaseType);
 
             var code = string.Empty;
             if (IsSqlUpdateStatus.Equals("True"))
@@ -804,6 +806,8 @@ namespace Library.Facade.CodeGenerator
                 code += Environment.NewLine + dal.GenerateSqlForSelectPager(out ResultMsg, criteria);
             if (IsSqlSelectAll.Equals("True"))
                 code += Environment.NewLine + dal.GenerateSqlForSelectAll(out ResultMsg, criteria);
+            if (IsSqlDelete.Equals("True"))
+                code += Environment.NewLine + dal.GenerateSqlForDelete(out ResultMsg, criteria);
             return code;
         }
 

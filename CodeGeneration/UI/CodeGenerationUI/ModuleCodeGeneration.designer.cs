@@ -30,6 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ModuleCodeGeneration));
             this.gboxProperty = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.btnCriteriaGenerate = new System.Windows.Forms.Button();
             this.btnIDALGenerate = new System.Windows.Forms.Button();
             this.cboSqlSelectAll = new System.Windows.Forms.ComboBox();
             this.textBox22 = new System.Windows.Forms.TextBox();
@@ -81,8 +83,9 @@
             this.rtxtCont = new System.Windows.Forms.RichTextBox();
             this.sfdCode = new System.Windows.Forms.SaveFileDialog();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.button1 = new System.Windows.Forms.Button();
-            this.btnCriteriaGenerate = new System.Windows.Forms.Button();
+            this.cboSqlDelete = new System.Windows.Forms.ComboBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox24 = new System.Windows.Forms.TextBox();
             this.gboxProperty.SuspendLayout();
             this.gboxContent.SuspendLayout();
             this.SuspendLayout();
@@ -92,6 +95,9 @@
             this.gboxProperty.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gboxProperty.Controls.Add(this.cboSqlDelete);
+            this.gboxProperty.Controls.Add(this.textBox1);
+            this.gboxProperty.Controls.Add(this.textBox24);
             this.gboxProperty.Controls.Add(this.button1);
             this.gboxProperty.Controls.Add(this.btnCriteriaGenerate);
             this.gboxProperty.Controls.Add(this.btnIDALGenerate);
@@ -147,12 +153,37 @@
             this.gboxProperty.TabIndex = 1;
             this.gboxProperty.TabStop = false;
             // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Location = new System.Drawing.Point(21, 479);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(175, 25);
+            this.button1.TabIndex = 75;
+            this.button1.Text = "C#-One-Key-Generate";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // btnCriteriaGenerate
+            // 
+            this.btnCriteriaGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCriteriaGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCriteriaGenerate.Location = new System.Drawing.Point(207, 479);
+            this.btnCriteriaGenerate.Name = "btnCriteriaGenerate";
+            this.btnCriteriaGenerate.Size = new System.Drawing.Size(175, 25);
+            this.btnCriteriaGenerate.TabIndex = 74;
+            this.btnCriteriaGenerate.Text = "C#-Criteria-Generate";
+            this.btnCriteriaGenerate.UseVisualStyleBackColor = true;
+            this.btnCriteriaGenerate.Click += new System.EventHandler(this.btnCriteriaGenerate_Click);
+            // 
             // btnIDALGenerate
             // 
             this.btnIDALGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnIDALGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnIDALGenerate.Location = new System.Drawing.Point(21, 525);
+            this.btnIDALGenerate.Location = new System.Drawing.Point(21, 541);
             this.btnIDALGenerate.Name = "btnIDALGenerate";
             this.btnIDALGenerate.Size = new System.Drawing.Size(175, 25);
             this.btnIDALGenerate.TabIndex = 73;
@@ -243,7 +274,7 @@
             this.txtSqlParameterPrefix.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSqlParameterPrefix.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtSqlParameterPrefix.Location = new System.Drawing.Point(146, 379);
+            this.txtSqlParameterPrefix.Location = new System.Drawing.Point(146, 403);
             this.txtSqlParameterPrefix.Multiline = true;
             this.txtSqlParameterPrefix.Name = "txtSqlParameterPrefix";
             this.txtSqlParameterPrefix.Size = new System.Drawing.Size(236, 25);
@@ -252,7 +283,7 @@
             // textBox8
             // 
             this.textBox8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox8.Location = new System.Drawing.Point(21, 379);
+            this.textBox8.Location = new System.Drawing.Point(21, 403);
             this.textBox8.Multiline = true;
             this.textBox8.Name = "textBox8";
             this.textBox8.ReadOnly = true;
@@ -265,7 +296,7 @@
             this.txtModelClassNamePrefix.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtModelClassNamePrefix.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtModelClassNamePrefix.Location = new System.Drawing.Point(146, 235);
+            this.txtModelClassNamePrefix.Location = new System.Drawing.Point(146, 259);
             this.txtModelClassNamePrefix.Multiline = true;
             this.txtModelClassNamePrefix.Name = "txtModelClassNamePrefix";
             this.txtModelClassNamePrefix.Size = new System.Drawing.Size(236, 25);
@@ -275,7 +306,7 @@
             // textBox4
             // 
             this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox4.Location = new System.Drawing.Point(21, 235);
+            this.textBox4.Location = new System.Drawing.Point(21, 259);
             this.textBox4.Multiline = true;
             this.textBox4.Name = "textBox4";
             this.textBox4.ReadOnly = true;
@@ -288,7 +319,7 @@
             this.btnSetConfig.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSetConfig.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSetConfig.Location = new System.Drawing.Point(207, 556);
+            this.btnSetConfig.Location = new System.Drawing.Point(207, 572);
             this.btnSetConfig.Name = "btnSetConfig";
             this.btnSetConfig.Size = new System.Drawing.Size(175, 25);
             this.btnSetConfig.TabIndex = 62;
@@ -301,7 +332,7 @@
             this.txtFacadeNamespace.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFacadeNamespace.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtFacadeNamespace.Location = new System.Drawing.Point(146, 307);
+            this.txtFacadeNamespace.Location = new System.Drawing.Point(146, 331);
             this.txtFacadeNamespace.Multiline = true;
             this.txtFacadeNamespace.Name = "txtFacadeNamespace";
             this.txtFacadeNamespace.Size = new System.Drawing.Size(236, 25);
@@ -311,7 +342,7 @@
             // textBox19
             // 
             this.textBox19.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox19.Location = new System.Drawing.Point(21, 307);
+            this.textBox19.Location = new System.Drawing.Point(21, 331);
             this.textBox19.Multiline = true;
             this.textBox19.Name = "textBox19";
             this.textBox19.ReadOnly = true;
@@ -346,7 +377,7 @@
             this.txtFacadeClassNameSurfix.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFacadeClassNameSurfix.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtFacadeClassNameSurfix.Location = new System.Drawing.Point(146, 331);
+            this.txtFacadeClassNameSurfix.Location = new System.Drawing.Point(146, 355);
             this.txtFacadeClassNameSurfix.Multiline = true;
             this.txtFacadeClassNameSurfix.Name = "txtFacadeClassNameSurfix";
             this.txtFacadeClassNameSurfix.Size = new System.Drawing.Size(236, 25);
@@ -356,7 +387,7 @@
             // textBox20
             // 
             this.textBox20.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox20.Location = new System.Drawing.Point(21, 331);
+            this.textBox20.Location = new System.Drawing.Point(21, 355);
             this.textBox20.Multiline = true;
             this.textBox20.Name = "textBox20";
             this.textBox20.ReadOnly = true;
@@ -369,7 +400,7 @@
             this.txtLogicNamespace.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLogicNamespace.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtLogicNamespace.Location = new System.Drawing.Point(146, 259);
+            this.txtLogicNamespace.Location = new System.Drawing.Point(146, 283);
             this.txtLogicNamespace.Multiline = true;
             this.txtLogicNamespace.Name = "txtLogicNamespace";
             this.txtLogicNamespace.Size = new System.Drawing.Size(236, 25);
@@ -379,7 +410,7 @@
             // textBox18
             // 
             this.textBox18.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox18.Location = new System.Drawing.Point(21, 259);
+            this.textBox18.Location = new System.Drawing.Point(21, 283);
             this.textBox18.Multiline = true;
             this.textBox18.Name = "textBox18";
             this.textBox18.ReadOnly = true;
@@ -392,7 +423,7 @@
             this.btnSqlGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSqlGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSqlGenerate.Location = new System.Drawing.Point(207, 431);
+            this.btnSqlGenerate.Location = new System.Drawing.Point(207, 447);
             this.btnSqlGenerate.Name = "btnSqlGenerate";
             this.btnSqlGenerate.Size = new System.Drawing.Size(175, 25);
             this.btnSqlGenerate.TabIndex = 52;
@@ -405,7 +436,7 @@
             this.btnDalGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDalGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDalGenerate.Location = new System.Drawing.Point(207, 525);
+            this.btnDalGenerate.Location = new System.Drawing.Point(207, 541);
             this.btnDalGenerate.Name = "btnDalGenerate";
             this.btnDalGenerate.Size = new System.Drawing.Size(175, 25);
             this.btnDalGenerate.TabIndex = 51;
@@ -535,7 +566,7 @@
             this.txtProcedurePrefix.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtProcedurePrefix.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtProcedurePrefix.Location = new System.Drawing.Point(146, 355);
+            this.txtProcedurePrefix.Location = new System.Drawing.Point(146, 379);
             this.txtProcedurePrefix.Multiline = true;
             this.txtProcedurePrefix.Name = "txtProcedurePrefix";
             this.txtProcedurePrefix.Size = new System.Drawing.Size(236, 25);
@@ -545,7 +576,7 @@
             // textBox5
             // 
             this.textBox5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox5.Location = new System.Drawing.Point(21, 355);
+            this.textBox5.Location = new System.Drawing.Point(21, 379);
             this.textBox5.Multiline = true;
             this.textBox5.Name = "textBox5";
             this.textBox5.ReadOnly = true;
@@ -558,7 +589,7 @@
             this.txtModelsNamespace.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtModelsNamespace.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtModelsNamespace.Location = new System.Drawing.Point(146, 211);
+            this.txtModelsNamespace.Location = new System.Drawing.Point(146, 235);
             this.txtModelsNamespace.Multiline = true;
             this.txtModelsNamespace.Name = "txtModelsNamespace";
             this.txtModelsNamespace.Size = new System.Drawing.Size(236, 25);
@@ -568,7 +599,7 @@
             // textBox3
             // 
             this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox3.Location = new System.Drawing.Point(21, 211);
+            this.textBox3.Location = new System.Drawing.Point(21, 235);
             this.textBox3.Multiline = true;
             this.textBox3.Name = "textBox3";
             this.textBox3.ReadOnly = true;
@@ -581,7 +612,7 @@
             this.btnModelGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnModelGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnModelGenerate.Location = new System.Drawing.Point(21, 494);
+            this.btnModelGenerate.Location = new System.Drawing.Point(21, 510);
             this.btnModelGenerate.Name = "btnModelGenerate";
             this.btnModelGenerate.Size = new System.Drawing.Size(175, 25);
             this.btnModelGenerate.TabIndex = 37;
@@ -594,7 +625,7 @@
             this.btnConnection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnConnection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnConnection.Location = new System.Drawing.Point(21, 431);
+            this.btnConnection.Location = new System.Drawing.Point(21, 447);
             this.btnConnection.Name = "btnConnection";
             this.btnConnection.Size = new System.Drawing.Size(175, 25);
             this.btnConnection.TabIndex = 36;
@@ -607,7 +638,7 @@
             this.btnViewGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnViewGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnViewGenerate.Location = new System.Drawing.Point(207, 494);
+            this.btnViewGenerate.Location = new System.Drawing.Point(207, 510);
             this.btnViewGenerate.Name = "btnViewGenerate";
             this.btnViewGenerate.Size = new System.Drawing.Size(175, 25);
             this.btnViewGenerate.TabIndex = 35;
@@ -620,7 +651,7 @@
             this.txtLogicClassNamePrefix.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLogicClassNamePrefix.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtLogicClassNamePrefix.Location = new System.Drawing.Point(146, 283);
+            this.txtLogicClassNamePrefix.Location = new System.Drawing.Point(146, 307);
             this.txtLogicClassNamePrefix.Multiline = true;
             this.txtLogicClassNamePrefix.Name = "txtLogicClassNamePrefix";
             this.txtLogicClassNamePrefix.Size = new System.Drawing.Size(236, 25);
@@ -668,7 +699,7 @@
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSave.Location = new System.Drawing.Point(21, 556);
+            this.btnSave.Location = new System.Drawing.Point(21, 572);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(175, 25);
             this.btnSave.TabIndex = 32;
@@ -691,7 +722,7 @@
             // textBox14
             // 
             this.textBox14.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox14.Location = new System.Drawing.Point(21, 283);
+            this.textBox14.Location = new System.Drawing.Point(21, 307);
             this.textBox14.Multiline = true;
             this.textBox14.Name = "textBox14";
             this.textBox14.ReadOnly = true;
@@ -757,30 +788,44 @@
             this.statusStrip1.TabIndex = 37;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // button1
+            // cboSqlDelete
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.cboSqlDelete.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Location = new System.Drawing.Point(21, 463);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(175, 25);
-            this.button1.TabIndex = 75;
-            this.button1.Text = "C#-One-Key-Generate";
-            this.button1.UseVisualStyleBackColor = true;
+            this.cboSqlDelete.DisplayMember = "name";
+            this.cboSqlDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cboSqlDelete.FormattingEnabled = true;
+            this.cboSqlDelete.Items.AddRange(new object[] {
+            "True",
+            "False"});
+            this.cboSqlDelete.Location = new System.Drawing.Point(147, 214);
+            this.cboSqlDelete.Name = "cboSqlDelete";
+            this.cboSqlDelete.Size = new System.Drawing.Size(233, 20);
+            this.cboSqlDelete.TabIndex = 78;
+            this.cboSqlDelete.Text = "True";
+            this.cboSqlDelete.ValueMember = "id";
             // 
-            // btnCriteriaGenerate
+            // textBox1
             // 
-            this.btnCriteriaGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCriteriaGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCriteriaGenerate.Location = new System.Drawing.Point(207, 463);
-            this.btnCriteriaGenerate.Name = "btnCriteriaGenerate";
-            this.btnCriteriaGenerate.Size = new System.Drawing.Size(175, 25);
-            this.btnCriteriaGenerate.TabIndex = 74;
-            this.btnCriteriaGenerate.Text = "C#-Criteria-Generate";
-            this.btnCriteriaGenerate.UseVisualStyleBackColor = true;
-            this.btnCriteriaGenerate.Click += new System.EventHandler(this.btnCriteriaGenerate_Click);
+            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox1.Location = new System.Drawing.Point(146, 211);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(236, 25);
+            this.textBox1.TabIndex = 77;
+            // 
+            // textBox24
+            // 
+            this.textBox24.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox24.Location = new System.Drawing.Point(21, 211);
+            this.textBox24.Multiline = true;
+            this.textBox24.Name = "textBox24";
+            this.textBox24.ReadOnly = true;
+            this.textBox24.Size = new System.Drawing.Size(126, 25);
+            this.textBox24.TabIndex = 76;
+            this.textBox24.Text = "Sql-Delete";
             // 
             // ModuleCodeGeneration
             // 
@@ -859,6 +904,9 @@
         private System.Windows.Forms.Button btnIDALGenerate;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button btnCriteriaGenerate;
+        private System.Windows.Forms.ComboBox cboSqlDelete;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBox24;
 
 
     }
