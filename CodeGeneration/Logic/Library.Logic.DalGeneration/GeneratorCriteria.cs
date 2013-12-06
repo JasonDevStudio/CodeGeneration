@@ -20,7 +20,7 @@ namespace Library.Logic.DalGeneration
         /// <summary>
         /// 表名
         /// </summary>
-        public string TableName{get;set;}
+        public string TableName{get;set;} 
         
         /// <summary>
         /// 数据库类型
