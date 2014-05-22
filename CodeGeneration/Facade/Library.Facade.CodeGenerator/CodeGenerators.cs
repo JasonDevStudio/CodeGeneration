@@ -27,28 +27,223 @@ namespace Library.Facade.CodeGenerator
             return gen;
         }
 
+        public string IFacadeCodeGeneration(out string resultMsg, string tableName, string dataBaseType = BaseDict.SqlServerData, string dataBaseName = null,
+            string modelsNamespace = null, string modelClassNamePrefix = "Model", string dalNamespace = null, string dalClassNamePrefix = "Logic",
+            string facadeNamespace = null, string FacadeClassNamePrefix = "Facade")
+        {
+            resultMsg = string.Empty;
+            var criteria = new GeneratorCriteria();
+            criteria.DataBaseType = dataBaseType;
+            criteria.TableName = tableName;
+            criteria.ModelsNamespace = modelsNamespace;
+            criteria.DalNamespace = dalNamespace;
+            criteria.DalClassNamePrefix = dalClassNamePrefix;
+            criteria.ModelClassNamePrefix = modelClassNamePrefix;
+            criteria.DataBaseName = dataBaseName; 
+
+            IGeneration gen = CreateInstance(criteria.DataBaseType);
+
+            var colList = gen.QueryColumnsByTable(out resultMsg, criteria);
+
+            string classNamePrivate = CommonMethod.StringToPrivateVar(criteria.TableName);
+            string classNamePublic = CommonMethod.StringToPublicVar(criteria.TableName);
+            string dbName = CommonMethod.StringToPublicVar(dataBaseName);
+            var strParameter = string.Empty; //参数
+
+            //主键列集合
+            var colPK = (from ModelGeneration col in colList
+                         where col.IsPrimaryKey == true
+                         select col).ToList();
+
+            StringBuilder sb = new StringBuilder();
+            #region Top
+            sb.AppendLine("using System;");
+            sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine("using System.Linq;");
+            sb.AppendLine("using System.Text;");
+            sb.AppendLine("using System.Data;");
+            sb.AppendLine("using Library.Kernel.DataBaseHelper;");
+            sb.AppendLine("using Library.StringItemDict;");
+            sb.AppendLine("using Library.Common;");
+            sb.AppendLine("using System.Data.Common;");
+
+            if (string.IsNullOrWhiteSpace(modelsNamespace))
+                sb.AppendFormat("using Library.Models.{0}", dbName);
+            else
+                sb.AppendFormat("using Library.{0}", criteria.ModelsNamespace);
+
+            sb.AppendLine();
+
+            if (string.IsNullOrWhiteSpace(criteria.DalNamespace))
+            {
+                sb.AppendFormat("using Library.{0}", "Logics");
+            }
+            else
+            {
+                sb.AppendFormat("using " + criteria.DalNamespace + ".Interfaces", dbName);
+                sb.AppendLine();
+                sb.AppendFormat("using " + criteria.DalNamespace + ".Classes", dbName);
+            }
+
+            sb.AppendLine();
+
+            if (string.IsNullOrWhiteSpace(criteria.DalNamespace))
+                sb.AppendFormat("namespace Library.{0}", "Facades");
+            else
+                sb.AppendFormat("namespace " + facadeNamespace + ".Interfaces", dbName);
+
+            sb.AppendLine();
+            sb.AppendLine("{");
+            sb.AppendFormat("    public interface I{0}{1}", FacadeClassNamePrefix, classNamePublic);
+            sb.AppendLine();
+            sb.AppendLine("    {");
+            #endregion
+            #region Pager
+            sb.AppendLine("        /// <summary>");
+            sb.AppendLine("        /// 分页查询 ");
+            sb.AppendLine("        /// </summary>");
+            sb.AppendLine("        /// <param name=\"recordCount\">输出参数 数据总数</param>");
+            sb.AppendLine("        /// <param name=\"criteria\">查询条件对象</param>");
+            sb.AppendLine("        /// <param name=\"pageSize\">每页显示数量</param>");
+            sb.AppendLine("        /// <param name=\"pageIndex\">当前页索引</param>");
+            sb.AppendLine("        /// <returns>结果集 泛型</returns>");
+            sb.AppendFormat("        public IList<{0}{1}> Query{1}ListPager(out string resultMsg, out decimal recordCount, Criteria{1} criteria, int pageSize = 10, int pageIndex = 1)",
+                criteria.ModelClassNamePrefix, classNamePublic);
+            sb.AppendLine();
+            sb.AppendLine();
+            #endregion
+            #region Detail
+            sb.AppendLine("        /// <summary>");
+            sb.AppendLine("        ///  查询实体");
+            sb.AppendLine("        /// </summary>");
+
+            foreach (var item in colPK)
+            {
+                string dataTypeName = CommonMethod.SqlTypeToCsharpType(item.DataType).Name;
+                sb.AppendFormat("        /// <param name=\"{0}\">{1}{2} {3}</param>", item.PrivateVarName,
+                    criteria.ModelClassNamePrefix, item.PublicVarName, item.ColumnComments);
+                sb.AppendLine();
+            }
+            sb.AppendFormat("        /// <returns>{0}{1}</returns>", criteria.ModelClassNamePrefix, classNamePublic);
+            sb.AppendLine();
+            sb.AppendFormat("        {0}{1} {2}Detail(out string resultMsg,", criteria.ModelClassNamePrefix, classNamePublic, classNamePublic);
+
+            foreach (var item in colPK)
+            {
+                string dataTypeName = CommonMethod.SqlTypeToCsharpType(item.DataType).Name;
+                if (string.IsNullOrWhiteSpace(strParameter))
+                    strParameter += string.Format("{0} {1} ", dataTypeName, item.PrivateVarName);
+                else
+                    strParameter += string.Format(",{0} {1} ", dataTypeName, item.PrivateVarName);
+            }
+            sb.Append(strParameter);
+            sb.AppendLine(");");
+            sb.AppendLine();
+
+            #endregion
+            #region InsertUpdate
+            sb.AppendLine("        /// <summary>");
+            sb.AppendLine("        /// 数据 添加/更新");
+            sb.AppendLine("        /// </summary>");
+            sb.AppendFormat("        /// <param name=\"{0}\">实体</param>", classNamePrivate);
+            sb.AppendLine();
+            sb.AppendLine("        /// <returns>执行结果</returns>");
+            sb.AppendFormat("        int {0}InsertUpdate(out string resultMsg,{1}{2} {3},DbTransaction tran =null);", classNamePublic, criteria.ModelClassNamePrefix, classNamePublic, classNamePrivate);
+            sb.AppendLine();
+            sb.AppendLine();
+            #endregion
+            #region UpdateStatus
+            sb.AppendLine("        /// <summary>");
+            sb.AppendLine("        /// 数据状态 更新");
+            sb.AppendLine("        /// </summary>");
+            foreach (var item in colList)
+            {
+                if (item.IsPrimaryKey)//判断主键
+                {
+                    sb.AppendFormat("        /// <param name=\"{0}\">{1} {2}</param>", item.PrivateVarName, item.PublicVarName, item.ColumnComments);
+                    sb.AppendLine();
+                }
+                if (item.ColumnName.ToLower().IndexOf("deleted") > -1 || item.ColumnName.ToLower().IndexOf("status") > -1)//判断状态字段
+                {
+                    sb.AppendFormat("        /// <param name=\"{0}\">状态</param>", item.PrivateVarName);
+                    sb.AppendLine();
+                }
+
+            }
+            sb.AppendLine("        /// <returns>执行结果</returns>");
+            sb.AppendFormat("        int {0}UpdateStatus(out string resultMsg", classNamePublic);
+            foreach (var item in colList)
+            {
+                string dataTypeName = CommonMethod.SqlTypeToCsharpType(item.DataType).Name;
+
+                strParameter = string.Empty;
+                if (item.IsPrimaryKey || item.ColumnName.ToLower().IndexOf("deleted") > -1 || item.ColumnName.ToLower().IndexOf("status") > -1)
+                {
+                    strParameter += string.Format(",{0} {1} ", dataTypeName, item.PrivateVarName);
+                    sb.Append(strParameter);
+                }
+            }
+            sb.AppendLine(",DbTransaction tran=null);");
+            sb.AppendLine();
+
+            #endregion
+            #region Detele
+            sb.AppendLine("        /// <summary>");
+            sb.AppendLine("        /// 数据 物理删除");
+            sb.AppendLine("        /// </summary>");
+            foreach (var item in colList)
+            {
+                if (item.IsPrimaryKey)//判断主键
+                {
+                    sb.AppendFormat("        /// <param name=\"{0}\">{1} {2}</param>", item.PrivateVarName, item.PublicVarName, item.ColumnComments);
+                    sb.AppendLine();
+                }
+            }
+            sb.AppendLine("        /// <returns>执行结果</returns>");
+            sb.AppendFormat("        int {0}Delete(out string resultMsg", classNamePublic);
+            foreach (var item in colList)
+            {
+                string dataTypeName = CommonMethod.SqlTypeToCsharpType(item.DataType).Name;
+
+                strParameter = string.Empty;
+                if (item.IsPrimaryKey)
+                {
+                    strParameter += string.Format(",{0} {1} ", dataTypeName, item.PrivateVarName);
+                    sb.Append(strParameter);
+                }
+            }
+            sb.AppendLine(",DbTransaction tran=null);");
+            sb.AppendLine();
+
+            #endregion
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            return sb.ToString();
+        }
+        
         /// <summary>
         /// 生成Model Code
         /// </summary>
         /// <param name="resultMsg">执行结果信息</param>
-        /// <param name="TableName">表名</param>
-        /// <param name="DataBaseType">数据库类型</param>
-        /// <param name="DataBaseName">数据库名</param>
-        /// <param name="ModelsNamespace">Model层命名空间</param>
-        /// <param name="ModelClassNamePrefix">Model层类名前缀</param>
-        public string ModelCodeGeneration(out string resultMsg, string TableName, string DataBaseType = BaseDict.SqlServerData,
-            string DataBaseName = null, string ModelsNamespace = "Model", string ModelClassNamePrefix = "Model")
+        /// <param name="tableName">表名</param>
+        /// <param name="dataBaseType">数据库类型</param>
+        /// <param name="dataBaseName">数据库名</param>
+        /// <param name="modelsNamespace">Model层命名空间</param>
+        /// <param name="modelClassNamePrefix">Model层类名前缀</param>
+        public string ModelCodeGeneration(out string resultMsg, string tableName, string dataBaseType = BaseDict.SqlServerData,
+            string dataBaseName = null, string modelsNamespace = null, string modelClassNamePrefix = "Model")
         {
             resultMsg = string.Empty;
             var criteria = new GeneratorCriteria();
-            criteria.DataBaseType = DataBaseType;
-            criteria.TableName = TableName;
-            criteria.ModelsNamespace = ModelsNamespace;
-            criteria.ModelClassNamePrefix = ModelClassNamePrefix;
-            criteria.DataBaseName = DataBaseName;
+            criteria.DataBaseType = dataBaseType;
+            criteria.TableName = tableName;
+            criteria.ModelsNamespace = modelsNamespace;
+            criteria.ModelClassNamePrefix = modelClassNamePrefix;
+            criteria.DataBaseName = dataBaseName;
 
             IGeneration gen = CreateInstance(criteria.DataBaseType);
 
+            string dbName = CommonMethod.StringToPublicVar(dataBaseName);
             var className = CommonMethod.StringToPublicVar(criteria.TableName);
             var colList = gen.QueryColumnsByTable(out resultMsg, criteria);
 
@@ -59,7 +254,12 @@ namespace Library.Facade.CodeGenerator
             sb.AppendLine("using System.Text;");
             sb.AppendLine("using System.ComponentModel.DataAnnotations;");
             sb.AppendLine();
-            sb.AppendFormat("namespace Library.{0}", criteria.ModelsNamespace);
+
+            if (string.IsNullOrWhiteSpace(modelsNamespace))
+                sb.AppendFormat("namespace Library.Models.{0}", dbName);
+            else
+                sb.AppendFormat("namespace Library.{0}", criteria.ModelsNamespace);
+
             sb.AppendLine();
             sb.AppendLine("{");
             sb.AppendFormat("    public class {0}{1}", criteria.ModelClassNamePrefix, className);
@@ -70,7 +270,7 @@ namespace Library.Facade.CodeGenerator
             {
                 Type type = CommonMethod.SqlTypeToCsharpType(item.DataType);
                 var regExpression = CommonMethod.GetRegularExpression(type.Name);
-                
+
                 if (!string.IsNullOrWhiteSpace(item.ColumnComments))
                 {
                     sb.AppendLine("        /// <summary> ");
@@ -81,7 +281,7 @@ namespace Library.Facade.CodeGenerator
                         sb.AppendLine("        [Required]");
                     sb.AppendFormat("        [Display(Name = \"{0}\")]", item.ColumnComments);
                     sb.AppendLine();
-                } 
+                }
 
                 if (!string.IsNullOrWhiteSpace(regExpression))
                 {
@@ -105,25 +305,25 @@ namespace Library.Facade.CodeGenerator
         /// IDAL层代码生成
         /// </summary>
         /// <param name="resultMsg">执行结果信息</param>
-        /// <param name="TableName">表名</param>
-        /// <param name="DataBaseType">数据库类型</param>
-        /// <param name="DataBaseName">数据库名</param>
-        /// <param name="ModelsNamespace">Model层命名空间</param>
-        /// <param name="ModelClassNamePrefix">Model层类名前缀</param>
-        /// <param name="DalNamespace">Dal层命名空间</param>
-        /// <param name="DalClassNamePrefix">Dal层类名前缀</param> 
-        public string IDalCodeGeneration(out string resultMsg, string TableName, string DataBaseType = BaseDict.SqlServerData, string DataBaseName = null,
-            string ModelsNamespace = "Model", string ModelClassNamePrefix = "Model", string DalNamespace = "Logic", string DalClassNamePrefix = "Logic")
+        /// <param name="tableName">表名</param>
+        /// <param name="dataBaseType">数据库类型</param>
+        /// <param name="dataBaseName">数据库名</param>
+        /// <param name="modelsNamespace">Model层命名空间</param>
+        /// <param name="modelClassNamePrefix">Model层类名前缀</param>
+        /// <param name="dalNamespace">Dal层命名空间</param>
+        /// <param name="dalClassNamePrefix">Dal层类名前缀</param> 
+        public string IDalCodeGeneration(out string resultMsg, string tableName, string dataBaseType = BaseDict.SqlServerData, string dataBaseName = null,
+            string modelsNamespace = null, string modelClassNamePrefix = "Model", string dalNamespace = null, string dalClassNamePrefix = "Logic")
         {
             resultMsg = string.Empty;
             var criteria = new GeneratorCriteria();
-            criteria.DataBaseType = DataBaseType;
-            criteria.TableName = TableName;
-            criteria.ModelsNamespace = ModelsNamespace;
-            criteria.DalNamespace = DalNamespace;
-            criteria.DalClassNamePrefix = DalClassNamePrefix;
-            criteria.ModelClassNamePrefix = ModelClassNamePrefix;
-            criteria.DataBaseName = DataBaseName;
+            criteria.DataBaseType = dataBaseType;
+            criteria.TableName = tableName;
+            criteria.ModelsNamespace = modelsNamespace;
+            criteria.DalNamespace = dalNamespace;
+            criteria.DalClassNamePrefix = dalClassNamePrefix;
+            criteria.ModelClassNamePrefix = modelClassNamePrefix;
+            criteria.DataBaseName = dataBaseName;
 
             IGeneration gen = CreateInstance(criteria.DataBaseType);
 
@@ -131,7 +331,7 @@ namespace Library.Facade.CodeGenerator
 
             string classNamePrivate = CommonMethod.StringToPrivateVar(criteria.TableName);
             string classNamePublic = CommonMethod.StringToPublicVar(criteria.TableName);
-
+            string dbName = CommonMethod.StringToPublicVar(dataBaseName);
             var strParameter = string.Empty; //参数
 
             //主键列集合
@@ -152,7 +352,12 @@ namespace Library.Facade.CodeGenerator
             sb.AppendLine("using System.Data.Common;");
             sb.AppendFormat("using Library.{0};", criteria.ModelsNamespace);
             sb.AppendLine();
-            sb.AppendFormat("namespace Library.{0}", criteria.DalNamespace);
+
+            if (string.IsNullOrWhiteSpace(criteria.DalNamespace))
+                sb.AppendFormat("namespace Library.{0}", "Logics");
+            else
+                sb.AppendFormat("namespace " + criteria.DalNamespace + ".Interfaces", dbName);
+
             sb.AppendLine();
             sb.AppendLine("{");
             sb.AppendFormat("    public interface I{0}{1}", criteria.DalClassNamePrefix, classNamePublic);
@@ -168,7 +373,7 @@ namespace Library.Facade.CodeGenerator
             sb.AppendLine("        /// <param name=\"pageSize\">每页显示数量</param>");
             sb.AppendLine("        /// <param name=\"pageIndex\">当前页索引</param>");
             sb.AppendLine("        /// <returns>结果集 泛型</returns>");
-            sb.AppendFormat("        public IList<{0}{1}> Query{1}ListPager(out string resultMsg, out decimal recordCount, Criteria{1}.Pager criteria, int pageSize = 10, int pageIndex = 1)",
+            sb.AppendFormat("        public IList<{0}{1}> Query{1}ListPager(out string resultMsg, out decimal recordCount, Criteria{1} criteria, int pageSize = 10, int pageIndex = 1)",
                 criteria.ModelClassNamePrefix, classNamePublic);
             sb.AppendLine();
             sb.AppendLine();
@@ -286,31 +491,32 @@ namespace Library.Facade.CodeGenerator
         /// DAL层代码生成
         /// </summary>
         /// <param name="resultMsg">执行结果信息</param>
-        /// <param name="TableName">表名</param>
-        /// <param name="DataBaseType">数据库类型</param>
-        /// <param name="DataBaseName">数据库名</param>
-        /// <param name="ModelsNamespace">Model层命名空间</param>
-        /// <param name="ModelClassNamePrefix">Model层类名前缀</param>
-        /// <param name="DalNamespace">Dal层命名空间</param>
-        /// <param name="DalClassNamePrefix">Dal层类名前缀</param> 
-        public string DalCodeGeneration(out string resultMsg, string TableName, string DataBaseType = BaseDict.SqlServerData, string DataBaseName = null,
-            string ModelsNamespace = "Model", string ModelClassNamePrefix = "Model", string DalNamespace = "Logic", string DalClassNamePrefix = "Logic")
+        /// <param name="tableName">表名</param>
+        /// <param name="dataBaseType">数据库类型</param>
+        /// <param name="dataBaseName">数据库名</param>
+        /// <param name="modelsNamespace">Model层命名空间</param>
+        /// <param name="modelClassNamePrefix">Model层类名前缀</param>
+        /// <param name="dalNamespace">Dal层命名空间</param>
+        /// <param name="dalClassNamePrefix">Dal层类名前缀</param> 
+        public string DalCodeGeneration(out string resultMsg, string tableName, string dataBaseType = BaseDict.SqlServerData, string dataBaseName = null,
+            string modelsNamespace = null, string modelClassNamePrefix = "Model", string dalNamespace = null, string dalClassNamePrefix = "Logic")
         {
             resultMsg = string.Empty;
             var criteria = new GeneratorCriteria();
-            criteria.DataBaseType = DataBaseType;
-            criteria.TableName = TableName;
-            criteria.ModelsNamespace = ModelsNamespace;
-            criteria.DalNamespace = DalNamespace;
-            criteria.DalClassNamePrefix = DalClassNamePrefix;
-            criteria.ModelClassNamePrefix = ModelClassNamePrefix;
-            criteria.DataBaseName = DataBaseName;
+            criteria.DataBaseType = dataBaseType;
+            criteria.TableName = tableName;
+            criteria.ModelsNamespace = modelsNamespace;
+            criteria.DalNamespace = dalNamespace;
+            criteria.DalClassNamePrefix = dalClassNamePrefix;
+            criteria.ModelClassNamePrefix = modelClassNamePrefix;
+            criteria.DataBaseName = dataBaseName;
 
             IGeneration gen = CreateInstance(criteria.DataBaseType);
             var colList = gen.QueryColumnsByTable(out resultMsg, criteria);
 
             string classNamePrivate = CommonMethod.StringToPrivateVar(criteria.TableName);
             string classNamePublic = CommonMethod.StringToPublicVar(criteria.TableName);
+            string dbName = CommonMethod.StringToPublicVar(dataBaseName);
 
             var strParameter = string.Empty; //参数
 
@@ -330,9 +536,19 @@ namespace Library.Facade.CodeGenerator
             sb.AppendLine("using Library.StringItemDict;");
             sb.AppendLine("using Library.Common;");
             sb.AppendLine("using System.Data.Common;");
-            sb.AppendFormat("using Library.{0};", criteria.ModelsNamespace);
+            
+            if(string.IsNullOrWhiteSpace(criteria.ModelsNamespace))
+                sb.AppendFormat("using Library.Models.CustomsModels;", dbName);
+            else
+                sb.AppendFormat("using Library.Models;");
+
             sb.AppendLine();
-            sb.AppendFormat("namespace Library.{0}", criteria.DalNamespace);
+
+            if (string.IsNullOrWhiteSpace(criteria.DalNamespace))
+                sb.AppendFormat("namespace Library.{0}", "Logics");
+            else
+                sb.AppendFormat("namespace " + criteria.DalNamespace + ".Classes", dbName);
+
             sb.AppendLine();
             sb.AppendLine("{");
             sb.AppendFormat("    public class {0}{1} : I{0}{1}", criteria.DalClassNamePrefix, classNamePublic);
@@ -739,14 +955,15 @@ namespace Library.Facade.CodeGenerator
         /// Criteria 类 代码生成
         /// </summary>
         /// <param name="resultMsg"></param>
-        /// <param name="TableName"></param>
+        /// <param name="tableName"></param>
         /// <returns></returns>
-        public string CriteriaCodeGeneration(out string resultMsg, string TableName, string DalNamespace = "Logic")
+        public string CriteriaCodeGeneration(out string resultMsg, string dataBaseName = null, string tableName = null, string dalNamespace = null)
         {
             resultMsg = string.Empty;
             StringBuilder sb = new StringBuilder();
-            string classNamePrivate = CommonMethod.StringToPrivateVar(TableName);
-            string classNamePublic = CommonMethod.StringToPublicVar(TableName);
+            string classNamePrivate = CommonMethod.StringToPrivateVar(tableName);
+            string classNamePublic = CommonMethod.StringToPublicVar(tableName);
+            string dbName = CommonMethod.StringToPublicVar(dataBaseName);
             #region Top
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Collections.Generic;");
@@ -754,15 +971,17 @@ namespace Library.Facade.CodeGenerator
             sb.AppendLine("using System.Text;");
             sb.AppendLine("using System.ComponentModel.DataAnnotations;");
             sb.AppendLine();
-            sb.AppendFormat("namespace Library.{0}", DalNamespace);
+
+            sb.AppendFormat("namespace Library.Criterias.{0}", dbName);
+
             sb.AppendLine();
             sb.AppendLine("{");
             sb.AppendFormat("    public class Criteria{0} ", classNamePublic);
             sb.AppendLine();
             sb.AppendLine("    {");
-            sb.AppendLine("        public class Pager");
-            sb.AppendLine("        {");
-            sb.AppendLine("        }");
+            //sb.AppendLine("        public class Pager");
+            //sb.AppendLine("        {");
+            //sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
             sb.AppendLine();
@@ -788,7 +1007,7 @@ namespace Library.Facade.CodeGenerator
         public string TSqlCodeGeneration(out string ResultMsg, string TableName, string DataBaseType = BaseDict.SqlServerData, string DataBaseName = null,
             string SqlParameterPrefix = null, string SqlProcedurePrefix = null, string IsSqlInsertUpdate = "True", string IsSqlSelectDetail = "True", string IsSqlUpdateStatus = "True",
             string IsSqlSelectPager = "True", string IsSqlSelectAll = "True", string IsSqlDelete = "True")
-        { 
+        {
             ResultMsg = string.Empty;
             var criteria = new GeneratorCriteria();
             criteria.DataBaseName = DataBaseName;

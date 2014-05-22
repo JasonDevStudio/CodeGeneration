@@ -27,8 +27,32 @@ namespace CodeGenerationUI
 
         //测试连接按钮
         private void btnConnection_Click(object sender, EventArgs e)
-        {
-            Connection();
+        { 
+            string resultMsg = string.Empty;
+            string strDataAccess = ConfigurationManager.AppSettings["DataAccess"];
+            CodeGenerators gen = new CodeGenerators();
+            try
+            {
+                if (cboSqlDataBase.Text == "Please select" || (string.IsNullOrWhiteSpace(cboSqlDataBase.Text) && strDataAccess.Equals(BaseDict.SqlServerData)))
+                {
+                    MessageBox.Show("请选择数据库!", "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                if (cboSqlDataTable.Text == "Please select" || string.IsNullOrWhiteSpace(cboSqlDataTable.Text))
+                {
+                    MessageBox.Show("请选择数据表!", "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                rtxtCont.Text = gen.IFacadeCodeGeneration(out resultMsg, cboSqlDataTable.Text.Trim(), strDataAccess, cboSqlDataBase.Text.Trim(),
+                    txtModelsNamespace.Text.Trim(), txtModelClassNamePrefix.Text.Trim(), txtLogicNamespace.Text.Trim(), txtLogicClassNamePrefix.Text.Trim()
+                    , txtFacadeNamespace.Text.Trim(), txtFacadeClassNameSurfix.Text.Trim());
+                SetStyle();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:" + ex.ToString());
+            }
         }
         //数据库下拉列表选择事件
         private void cboSqlDataBase_SelectedIndexChanged(object sender, EventArgs e)
@@ -67,8 +91,9 @@ namespace CodeGenerationUI
             if (string.IsNullOrWhiteSpace(cboSqlDataTable.Text.Trim()))
                 return;
 
+            var modelNamespace = string.IsNullOrWhiteSpace(txtModelsNamespace.Text.Trim())?"Model" : txtModelsNamespace.Text.Trim();
             var className = CommonMethod.StringToPublicVar(cboSqlDataTable.Text.Trim());
-            sfdCode.FileName = className;
+            sfdCode.FileName = modelNamespace + className;
             DialogResult dresult = sfdCode.ShowDialog();
             if (dresult == System.Windows.Forms.DialogResult.OK)
             {
@@ -109,8 +134,7 @@ namespace CodeGenerationUI
             rtxtCont.Clear();
 
             rtxtCont.Text = gen.TSqlCodeGeneration(out resultMsg, cboSqlDataTable.Text.Trim(), strDataAccess, cboSqlDataBase.Text.Trim(),
-                txtSqlParameterPrefix.Text.Trim(),txtProcedurePrefix.Text.Trim(),cboSqlInsertUpdate.Text.Trim(),cboSqlSelectDetail.Text.Trim(),
-                cboSqlUpdateStatus.Text.Trim(),cboSqlSelectPager.Text.Trim(),cboSqlSelectAll.Text.Trim());
+                txtSqlParameterPrefix.Text.Trim(),txtProcedurePrefix.Text.Trim());
             
             SetStyle();
         }
@@ -219,7 +243,7 @@ namespace CodeGenerationUI
                     return;
                 }
 
-                rtxtCont.Text = gen.CriteriaCodeGeneration(out resultMsg, cboSqlDataTable.Text.Trim(), txtLogicNamespace.Text.Trim());
+                rtxtCont.Text = gen.CriteriaCodeGeneration(out resultMsg,dataBaseName:cboSqlDataBase.Text.Trim(),tableName: cboSqlDataTable.Text.Trim() ,dalNamespace: txtLogicNamespace.Text.Trim());
                 SetStyle();
             }
             catch (Exception ex)
@@ -325,13 +349,7 @@ namespace CodeGenerationUI
             txtFacadeClassNameSurfix.Text = ConfigurationManager.AppSettings["FacadeClassPrefix"];
             txtProcedurePrefix.Text = ConfigurationManager.AppSettings["SqlProcedurePrefix"];
             txtSqlTablePrefix.Text = ConfigurationManager.AppSettings["SqlTablePrefix"];
-            txtSqlParameterPrefix.Text = ConfigurationManager.AppSettings["SqlParameterPrefix"];
-            cboSqlInsertUpdate.Text = ConfigurationManager.AppSettings["SqlInsertUpdate"];
-            cboSqlSelectDetail.Text = ConfigurationManager.AppSettings["SqlSelectDetail"];
-            cboSqlUpdateStatus.Text = ConfigurationManager.AppSettings["SqlUpdateStatus"];
-            cboSqlSelectPager.Text = ConfigurationManager.AppSettings["SqlSelectPager"];
-            cboSqlSelectAll.Text = ConfigurationManager.AppSettings["SqlSelectAll"]; 
-
+            txtSqlParameterPrefix.Text = ConfigurationManager.AppSettings["SqlParameterPrefix"]; 
         }
 
         /// <summary>
@@ -385,32 +403,7 @@ namespace CodeGenerationUI
                 config.AppSettings.Settings["SqlParameterPrefix"].Value = txtSqlParameterPrefix.Text.Trim();
             else
                 config.AppSettings.Settings.Add("SqlParameterPrefix", txtSqlParameterPrefix.Text.Trim());
-
-            if (AppSettingsKeyExists("SqlInsertUpdate", config))
-                config.AppSettings.Settings["SqlInsertUpdate"].Value = cboSqlInsertUpdate.Text.Trim();
-            else
-                config.AppSettings.Settings.Add("SqlInsertUpdate", cboSqlInsertUpdate.Text.Trim());
-
-            if (AppSettingsKeyExists("SqlSelectDetail", config))
-                config.AppSettings.Settings["SqlSelectDetail"].Value = cboSqlSelectDetail.Text.Trim();
-            else
-                config.AppSettings.Settings.Add("SqlSelectDetail", cboSqlSelectDetail.Text.Trim());
-
-            if (AppSettingsKeyExists("SqlUpdateStatus", config))
-                config.AppSettings.Settings["SqlUpdateStatus"].Value = cboSqlUpdateStatus.Text.Trim();
-            else
-                config.AppSettings.Settings.Add("SqlUpdateStatus", cboSqlUpdateStatus.Text.Trim());
-
-            if (AppSettingsKeyExists("SqlSelectPager", config))
-                config.AppSettings.Settings["SqlSelectPager"].Value = cboSqlSelectPager.Text.Trim();
-            else
-                config.AppSettings.Settings.Add("SqlSelectPager", cboSqlSelectPager.Text.Trim());
-
-            if (AppSettingsKeyExists("SqlSelectAll", config))
-                config.AppSettings.Settings["SqlSelectAll"].Value = cboSqlSelectAll.Text.Trim();
-            else
-                config.AppSettings.Settings.Add("SqlSelectAll", cboSqlSelectAll.Text.Trim());
-
+            
             config.Save(ConfigurationSaveMode.Modified);
             ConfigurationManager.RefreshSection("appSettings");
         }
