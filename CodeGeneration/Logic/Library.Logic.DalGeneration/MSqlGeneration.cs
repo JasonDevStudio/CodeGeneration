@@ -699,11 +699,13 @@ namespace Library.Logic.DalGeneration
             sbSql.AppendLine();
             sbSql.AppendFormat("	@{0} INT , ", strParmPagerSize);
             sbSql.AppendLine();
-            sbSql.AppendFormat("	@{0} INT OUT ", strParmRowCount);
+            sbSql.AppendFormat("	@{0} INT OUT ,", strParmRowCount);
+            sbSql.AppendLine();
+            sbSql.AppendFormat("	@{0} INT OUT ", strParmTotalPages);
             sbSql.AppendLine();
             sbSql.AppendLine("AS");
             sbSql.AppendLine("BEGIN ");
-            sbSql.AppendFormat("	DECLARE @{0} INT ,@{1} INT ,@{2} INT", strParmTotalPages, strParmStartRow, strParmEndRow);
+            sbSql.AppendFormat("	DECLARE @{0} INT ,@{1} INT", strParmStartRow, strParmEndRow);
             sbSql.AppendLine();
             sbSql.AppendFormat("	SET @{0} = (", strParmRowCount);
             sbSql.AppendLine();

@@ -70,14 +70,18 @@ namespace Library.Facade.CodeGenerator
             {
                 Type type = CommonMethod.SqlTypeToCsharpType(item.DataType);
                 var regExpression = CommonMethod.GetRegularExpression(type.Name);
-                sb.AppendLine("        /// <summary> ");
-                sb.AppendFormat("        /// {0} ", item.ColumnComments);
-                sb.AppendLine();
-                sb.AppendLine("        /// </summary>");
-                if (!item.IsNull)
-                    sb.AppendLine("        [Required]");
-                sb.AppendFormat("        [Display(Name = \"{0}\")]", item.ColumnComments);
-                sb.AppendLine();
+                
+                if (!string.IsNullOrWhiteSpace(item.ColumnComments))
+                {
+                    sb.AppendLine("        /// <summary> ");
+                    sb.AppendFormat("        /// {0} ", item.ColumnComments);
+                    sb.AppendLine();
+                    sb.AppendLine("        /// </summary>");
+                    if (!item.IsNull)
+                        sb.AppendLine("        [Required]");
+                    sb.AppendFormat("        [Display(Name = \"{0}\")]", item.ColumnComments);
+                    sb.AppendLine();
+                } 
 
                 if (!string.IsNullOrWhiteSpace(regExpression))
                 {
