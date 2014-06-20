@@ -1009,12 +1009,12 @@ namespace Library.Facade.CodeGenerator
             string IsSqlSelectPager = "True", string IsSqlSelectAll = "True", string IsSqlDelete = "True")
         {
             ResultMsg = string.Empty;
-            var criteria = new GeneratorCriteria();
-            criteria.DataBaseName = DataBaseName;
-            criteria.TableName = TableName;
-            criteria.SqlParameterPrefix = SqlParameterPrefix;
-            criteria.DataBaseType = DataBaseType;
-            criteria.SqlProcedurePrefix = SqlProcedurePrefix;
+            var criteria = new GeneratorCriteria();                 // 条件对象
+            criteria.DataBaseName = DataBaseName;                   // 数据库名称
+            criteria.TableName = TableName;                         // 表名
+            criteria.SqlParameterPrefix = SqlParameterPrefix;       // SQL参数前缀
+            criteria.DataBaseType = DataBaseType;                   // 数据库类型
+            criteria.SqlProcedurePrefix = SqlProcedurePrefix;       // 存储过程名称前缀
 
             IGeneration dal = CreateInstance(criteria.DataBaseType);
 

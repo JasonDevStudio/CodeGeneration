@@ -60,6 +60,8 @@ namespace Library.Logic.DalGeneration
             {
                 var model = new ModelGeneration();
                 model.ColumnName = dr["COLUMN_NAME"] == DBNull.Value ? string.Empty : dr["COLUMN_NAME"].ToString();
+                model.Prec = dr["PREC"] == DBNull.Value ? string.Empty : dr["PREC"].ToString();
+                model.Scale = dr["SCALE"] == DBNull.Value ? string.Empty : dr["SCALE"].ToString();
                 model.ColumnComments = dr["COLCOMMENTS"] == DBNull.Value ? string.Empty : dr["COLCOMMENTS"].ToString();
                 model.DataType = dr["DATA_TYPE"] == DBNull.Value ? string.Empty : dr["DATA_TYPE"].ToString();
                 model.DataLength = dr["DATA_LENGTH"] == DBNull.Value ? 0 : Convert.ToInt32(dr["DATA_LENGTH"]);
@@ -92,76 +94,49 @@ namespace Library.Logic.DalGeneration
         }
 
         /// <summary>
-        /// sql 数据类型字符串获取 
+        /// Sql 字段类型整理
         /// </summary>
-        /// <param name="sqlType">数据类型</param>
-        /// <param name="length">数据长度</param> 
-        private static string GetSqlTypeAndLength(string sqlType, string length)
+        /// <param name="model">Sql字段对象</param>
+        /// <returns></returns>
+        private static string GetSqlTypeAndLength(ModelGeneration model)
         {
-            switch (sqlType.ToLower())
+            switch (model.DataType.ToLower())
             {
-                case "bigint":
-                    return sqlType;
-                case "binary":
-                    return sqlType + " (" + length + ")";
-                case "bit":
-                    return sqlType;
-                case "char":
-                    return sqlType + " (" + length + ")";
-                case "datetime":
-                    return sqlType;
-                case "datetime2":
-                    return sqlType;
-                case "date":
-                    return sqlType;
-                case "datetimeoffset":
-                    return sqlType;
-                case "decimal":
-                    return sqlType;
-                case "float":
-                    return sqlType;
-                case "image":
-                    return sqlType;
-                case "int":
-                    return sqlType;
-                case "money":
-                    return sqlType;
+                case "numeric":
+                    return  string.Format("{0}({1},{2})",model.DataType,model.Prec,model.Scale);    
+                case "char": 
+                case "binary": 
                 case "nchar":
-                    return sqlType + " (" + length + ")";
                 case "ntext":
-                    return sqlType;
                 case "nvarchar":
-                    return sqlType + "(" + length + ")";
-                case "real":
-                    return sqlType;
-                case "smalldatetime":
-                    return sqlType;
-                case "smallint":
-                    return sqlType;
-                case "smallmoney":
-                    return sqlType;
-                case "text":
-                    return sqlType;
-                case "time":
-                    return sqlType;
-                case "timestamp":
-                    return sqlType;
-                case "tinyint":
-                    return sqlType;
-                case "udt"://自定义的数据类型
-                    return sqlType;
-                case "uniqueidentifier":
-                    return sqlType;
                 case "varbinary":
-                    return sqlType + "(" + length + ")";
                 case "varchar":
-                    return sqlType + "(" + length + ")";
                 case "variant":
-                    return sqlType + "(" + length + ")";
-                case "xml":
-                    return sqlType;
+                    return  string.Format("{0}({1})",model.DataType,model.DataLength);   
+                case "bigint":
+                case "bit":
+                case "datetime":
+                case "datetime2": 
+                case "date": 
+                case "datetimeoffset": 
+                case "decimal": 
+                case "float": 
+                case "image": 
+                case "int": 
+                case "money": 
+                case "real": 
+                case "smalldatetime": 
+                case "smallint": 
+                case "smallmoney": 
+                case "text": 
+                case "time": 
+                case "timestamp": 
+                case "tinyint": 
+                case "udt"://自定义的数据类型 
+                case "uniqueidentifier":                 
+                case "xml": 
                 default:
-                    return sqlType;
+                    return model.DataType;  
             }
         }
 
@@ -248,51 +223,51 @@ namespace Library.Logic.DalGeneration
             {
                 //存储过程名称
 
-                #region SQL拼接
+                #region SQL语句
 
-                StringBuilder SQL = new StringBuilder();
-                SQL.AppendFormat("USE {0} ", criteria.DataBaseName);
-                SQL.Append("SELECT COL.name  AS [COLUMN_NAME] , ");
-                SQL.Append("  COL.isnullable AS [NULLABLE] , ");
-                SQL.Append("  col.length AS [DATA_LENGTH], ");
-                SQL.Append("  SEP.Value                                      AS [COLCOMMENTS] , ");
-                SQL.Append("  ST.name                                        AS [DATA_TYPE] , ");
-                SQL.Append("  COLUMNPROPERTY(COL.id, COL.name, 'IsIdentity') AS [IsIdentity] , ");
-                SQL.Append("  [PRIMARYKEY] = ");
-                SQL.Append("  CASE ");
-                SQL.Append("    WHEN EXISTS ");
-                SQL.Append("      (SELECT 1 ");
-                SQL.Append("      FROM sysobjects ");
-                SQL.Append("      WHERE xtype    = 'PK' ");
-                SQL.Append("      AND parent_obj = COL.id ");
-                SQL.Append("      AND name      IN ");
-                SQL.Append("        (SELECT name ");
-                SQL.Append("        FROM sysindexes ");
-                SQL.Append("        WHERE indid IN ");
-                SQL.Append("          ( SELECT indid FROM sysindexkeys WHERE id = COL.id AND colid = COL.colid ");
-                SQL.Append("          ) ");
-                SQL.Append("        ) ");
-                SQL.Append("      ) ");
-                SQL.Append("    THEN '1' ");
-                SQL.Append("    ELSE '0' ");
-                SQL.Append("  END ");
-                SQL.Append("FROM SysColumns COL ");
-                SQL.Append("LEFT JOIN sys.extended_properties SEP ");
-                SQL.Append("ON COL.id     = SEP.major_id ");
-                SQL.Append("AND COL.colid = SEP.minor_id ");
-                SQL.Append("LEFT JOIN systypes ST ");
-                SQL.Append("ON COL.xusertype = ST.xusertype ");
-                SQL.Append("WHERE COL.id     = OBJECT_ID(@TableName)");
-                #endregion
+                string strSql = @"USE {0} 
+                                SELECT  COL.name AS [COLUMN_NAME] ,
+                                        COL.isnullable AS [NULLABLE] ,
+                                        col.length AS [DATA_LENGTH] ,
+                                        col.prec AS [PREC] ,
+                                        col.scale AS [SCALE] ,
+                                        SEP.Value AS [COLCOMMENTS] ,
+                                        ST.name AS [DATA_TYPE] ,
+                                        COLUMNPROPERTY(COL.id, COL.name, 'IsIdentity') AS [IsIdentity] ,
+                                        [PRIMARYKEY] = CASE WHEN EXISTS ( SELECT    1
+                                                                            FROM      sysobjects
+                                                                            WHERE     xtype = 'PK'
+                                                                                    AND parent_obj = COL.id
+                                                                                    AND name IN (
+                                                                                    SELECT  name
+                                                                                    FROM    sysindexes
+                                                                                    WHERE   indid IN (
+                                                                                            SELECT
+                                                                                                indid
+                                                                                            FROM
+                                                                                                sysindexkeys
+                                                                                            WHERE
+                                                                                                id = COL.id
+                                                                                                AND colid = COL.colid ) ) )
+                                                            THEN '1'
+                                                            ELSE '0'
+                                                        END
+                                FROM    SysColumns COL
+                                        LEFT JOIN sys.extended_properties SEP ON COL.id = SEP.major_id
+                                                                                    AND COL.colid = SEP.minor_id
+                                        LEFT JOIN systypes ST ON COL.xusertype = ST.xusertype
+                                WHERE   COL.id = OBJECT_ID(@TableName)";
 
-                string sql = SQL.ToString();
+                strSql = string.Format(strSql, criteria.DataBaseName);
+
+                #endregion 
 
                 //参数添加
                 IList<DBParameter> parm = new List<DBParameter>();
                 parm.Add(new DBParameter() { ParameterName = "@TableName", ParameterValue = criteria.TableName, ParameterInOut = BaseDict.ParmIn, ParameterType = DbType.String });
 
                 //查询执行
-                using (IDataReader dr = DBHelper.ExecuteReader(sql, false, parm))
+                using (IDataReader dr = DBHelper.ExecuteReader(strSql, false, parm))
                 {
                     list = GetColumnModel(dr);
                 }
@@ -341,7 +316,7 @@ namespace Library.Logic.DalGeneration
             sbSql.AppendLine();
             foreach (var item in colPK)
             {
-                var strSqlTypeAndLength = GetSqlTypeAndLength(item.DataType, item.DataLength.ToString());
+                var strSqlTypeAndLength = GetSqlTypeAndLength(item);
                 if (string.IsNullOrWhiteSpace(strParameter))
                     strParameter += string.Format("  @{0}{1} {2}", criteria.SqlParameterPrefix, item.PublicVarName, strSqlTypeAndLength);
                 else
@@ -401,7 +376,7 @@ namespace Library.Logic.DalGeneration
             sbSql.AppendLine();
             foreach (var item in colList)
             {
-                var strSqlTypeAndLength = GetSqlTypeAndLength(item.DataType, item.DataLength.ToString());
+                var strSqlTypeAndLength = GetSqlTypeAndLength(item);
                 if (string.IsNullOrWhiteSpace(strParameter))
                     strParameter += string.Format("	@{0}{1} {2}", criteria.SqlParameterPrefix, item.PublicVarName, strSqlTypeAndLength);
                 else
@@ -499,16 +474,16 @@ namespace Library.Logic.DalGeneration
         {
             resultMsg = string.Empty;
 
-            //查询字段列表
+            // 查询字段列表
             var colList = QueryColumnsByTable(out resultMsg, criteria);
 
-            //查询主键字段列表
+            // 查询主键字段列表
             var colPK = (from ModelGeneration model in colList
                          where model.IsPrimaryKey == true
                          select model).ToList();
 
-            string classNamePrivate = CommonMethod.StringToPrivateVar(criteria.TableName);
-            string classNamePublic = CommonMethod.StringToPublicVar(criteria.TableName);
+            string classNamePrivate = CommonMethod.StringToPrivateVar(criteria.TableName);          // 类名 私有
+            string classNamePublic = CommonMethod.StringToPublicVar(criteria.TableName);            // 类名 公有
             string strParameter = string.Empty;
             string strWhereSql = string.Empty;
             string strCols = string.Empty;
@@ -528,7 +503,7 @@ namespace Library.Logic.DalGeneration
             {
                 if (item.IsPrimaryKey || item.ColumnName.ToUpper().Contains("STATUS") || item.ColumnName.ToUpper().Contains("DELETE"))
                 {
-                    var strSqlTypeAndLength = GetSqlTypeAndLength(item.DataType, item.DataLength.ToString());
+                    var strSqlTypeAndLength = GetSqlTypeAndLength(item);
                     sbSql.AppendFormat("	@{0}{1} {2}, ", criteria.SqlParameterPrefix, item.PublicVarName, strSqlTypeAndLength);
                     sbSql.AppendLine();
                 }
@@ -558,11 +533,11 @@ namespace Library.Logic.DalGeneration
                 if (item.ColumnName.ToUpper().Contains("STATUS") || item.ColumnName.ToUpper().Contains("DELETE"))
                 {
                     if (string.IsNullOrWhiteSpace(strParameter))
-                        strParameter += string.Format("		[{0}] = CASE WHEN @{1}{2} IS NOT NULL THEN @{3}{4} ELSE [{5}] END  ",
-                        item.ColumnName, criteria.SqlParameterPrefix, item.PublicVarName, criteria.SqlParameterPrefix, item.PublicVarName, item.ColumnName);
+                        strParameter += string.Format("		[{0}] = CASE WHEN @{1}{2} IS NOT NULL THEN @{1}{3} ELSE [{5}] END  ",
+                        item.ColumnName, criteria.SqlParameterPrefix, item.PublicVarName, item.PublicVarName, item.ColumnName);
                     else
-                        strParameter += string.Format(",{0}		[{1}] = CASE WHEN @{2}{3} IS NOT NULL THEN @{4}{5} ELSE [{6}] END ",
-                        Environment.NewLine, item.ColumnName, criteria.SqlParameterPrefix, item.PublicVarName, criteria.SqlParameterPrefix, item.PublicVarName, item.ColumnName);
+                        strParameter += string.Format(",{0}		[{1}] = CASE WHEN @{2}{3} IS NOT NULL THEN @{2}{4} ELSE [{5}] END ",
+                        Environment.NewLine, item.ColumnName, criteria.SqlParameterPrefix, item.PublicVarName,item.PublicVarName, item.ColumnName);
                 }
             }
             sbSql.AppendLine(strParameter);
@@ -618,7 +593,7 @@ namespace Library.Logic.DalGeneration
             {
                 if (item.IsPrimaryKey)
                 {
-                    var strSqlTypeAndLength = GetSqlTypeAndLength(item.DataType, item.DataLength.ToString());
+                    var strSqlTypeAndLength = GetSqlTypeAndLength(item);
                     sbSql.AppendFormat("	@{0}{1} {2}, ", criteria.SqlParameterPrefix, item.PublicVarName, strSqlTypeAndLength);
                     sbSql.AppendLine();
                 }

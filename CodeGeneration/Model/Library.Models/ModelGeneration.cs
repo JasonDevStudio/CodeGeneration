@@ -70,6 +70,18 @@ namespace Library.Models
         public int DataLength { get; set; }
 
         /// <summary>
+        /// 精度
+        /// </summary>
+        [Display(Name = "精度")]
+        public string Prec { get; set; }
+
+        /// <summary>
+        /// 小数位数
+        /// </summary>
+        [Display(Name = "小数位数")]
+        public string Scale { get; set; }
+
+        /// <summary>
         /// 是否允许空
         /// </summary>
         [Display(Name="是否允许空")]
