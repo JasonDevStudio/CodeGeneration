@@ -533,7 +533,7 @@ namespace Library.Logic.DalGeneration
                 if (item.ColumnName.ToUpper().Contains("STATUS") || item.ColumnName.ToUpper().Contains("DELETE"))
                 {
                     if (string.IsNullOrWhiteSpace(strParameter))
-                        strParameter += string.Format("		[{0}] = CASE WHEN @{1}{2} IS NOT NULL THEN @{1}{3} ELSE [{5}] END  ",
+                        strParameter += string.Format("		[{0}] = CASE WHEN @{1}{2} IS NOT NULL THEN @{1}{3} ELSE [{4}] END  ",
                         item.ColumnName, criteria.SqlParameterPrefix, item.PublicVarName, item.PublicVarName, item.ColumnName);
                     else
                         strParameter += string.Format(",{0}		[{1}] = CASE WHEN @{2}{3} IS NOT NULL THEN @{2}{4} ELSE [{5}] END ",

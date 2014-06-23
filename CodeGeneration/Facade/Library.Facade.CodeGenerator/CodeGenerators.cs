@@ -132,9 +132,9 @@ namespace Library.Facade.CodeGenerator
             {
                 string dataTypeName = CommonMethod.SqlTypeToCsharpType(item.DataType).Name;
                 if (string.IsNullOrWhiteSpace(strParameter))
-                    strParameter += string.Format("{0} {1} ", dataTypeName, item.PrivateVarName);
+                    strParameter += string.Format("{0} {1} ", CommonMethod.TypeConversion(dataTypeName), item.PrivateVarName);
                 else
-                    strParameter += string.Format(",{0} {1} ", dataTypeName, item.PrivateVarName);
+                    strParameter += string.Format(",{0} {1} ", CommonMethod.TypeConversion(dataTypeName), item.PrivateVarName);
             }
             sb.Append(strParameter);
             sb.AppendLine(");");
@@ -179,7 +179,7 @@ namespace Library.Facade.CodeGenerator
                 strParameter = string.Empty;
                 if (item.IsPrimaryKey || item.ColumnName.ToLower().IndexOf("deleted") > -1 || item.ColumnName.ToLower().IndexOf("status") > -1)
                 {
-                    strParameter += string.Format(",{0} {1} ", dataTypeName, item.PrivateVarName);
+                    strParameter += string.Format(",{0} {1} ", CommonMethod.TypeConversion(dataTypeName), item.PrivateVarName);
                     sb.Append(strParameter);
                 }
             }
@@ -208,7 +208,7 @@ namespace Library.Facade.CodeGenerator
                 strParameter = string.Empty;
                 if (item.IsPrimaryKey)
                 {
-                    strParameter += string.Format(",{0} {1} ", dataTypeName, item.PrivateVarName);
+                    strParameter += string.Format(",{0} {1} ", CommonMethod.TypeConversion(dataTypeName), item.PrivateVarName);
                     sb.Append(strParameter);
                 }
             }
@@ -269,27 +269,28 @@ namespace Library.Facade.CodeGenerator
             foreach (ModelGeneration item in colList)
             {
                 Type type = CommonMethod.SqlTypeToCsharpType(item.DataType);
-                var regExpression = CommonMethod.GetRegularExpression(type.Name);
+                var regExpression = string.Empty; // CommonMethod.GetRegularExpression(type.Name);
 
                 if (!string.IsNullOrWhiteSpace(item.ColumnComments))
                 {
                     sb.AppendLine("        /// <summary> ");
-                    sb.AppendFormat("        /// {0} ", item.ColumnComments);
+                    sb.AppendFormat("        /// {0} ", item.ColumnComments.Replace(Environment.NewLine, " "));
                     sb.AppendLine();
                     sb.AppendLine("        /// </summary>");
-                    if (!item.IsNull)
-                        sb.AppendLine("        [Required]");
-                    sb.AppendFormat("        [Display(Name = \"{0}\")]", item.ColumnComments);
-                    sb.AppendLine();
+                    
                 }
 
                 if (!string.IsNullOrWhiteSpace(regExpression))
                 {
-                    sb.Append("        " + string.Format(regExpression, item.ColumnComments));
+                    if (!item.IsNull)
+                        sb.AppendLine("        [Required]");
+                    sb.AppendFormat("        [Display(Name = \"{0}\")]", item.ColumnComments.Replace(Environment.NewLine, " "));
+                    sb.AppendLine();
+                    sb.Append("        " + string.Format(regExpression, item.ColumnComments.Replace(Environment.NewLine," ")));
                     sb.AppendLine();
                 }
 
-                sb.AppendFormat("        public {0} {1} ", type.Name, item.PublicVarName);
+                sb.AppendFormat("        public {0} {1} ",  CommonMethod.TypeConversion(type.Name), item.PublicVarName);
                 sb.Append("{ get;set;} ");
                 sb.AppendLine(Environment.NewLine);
             }
@@ -398,9 +399,9 @@ namespace Library.Facade.CodeGenerator
             {
                 string dataTypeName = CommonMethod.SqlTypeToCsharpType(item.DataType).Name;
                 if (string.IsNullOrWhiteSpace(strParameter))
-                    strParameter += string.Format("{0} {1} ", dataTypeName, item.PrivateVarName);
+                    strParameter += string.Format("{0} {1} ", CommonMethod.TypeConversion(dataTypeName), item.PrivateVarName);
                 else
-                    strParameter += string.Format(",{0} {1} ", dataTypeName, item.PrivateVarName);
+                    strParameter += string.Format(",{0} {1} ", CommonMethod.TypeConversion(dataTypeName), item.PrivateVarName);
             }
             sb.Append(strParameter);
             sb.AppendLine(");");
@@ -445,7 +446,7 @@ namespace Library.Facade.CodeGenerator
                 strParameter = string.Empty;
                 if (item.IsPrimaryKey || item.ColumnName.ToLower().IndexOf("deleted") > -1 || item.ColumnName.ToLower().IndexOf("status") > -1)
                 {
-                    strParameter += string.Format(",{0} {1} ", dataTypeName, item.PrivateVarName);
+                    strParameter += string.Format(",{0} {1} ", CommonMethod.TypeConversion(dataTypeName), item.PrivateVarName);
                     sb.Append(strParameter);
                 }
             }
@@ -474,7 +475,7 @@ namespace Library.Facade.CodeGenerator
                 strParameter = string.Empty;
                 if (item.IsPrimaryKey)
                 {
-                    strParameter += string.Format(",{0} {1} ", dataTypeName, item.PrivateVarName);
+                    strParameter += string.Format(",{0} {1} ", CommonMethod.TypeConversion(dataTypeName), item.PrivateVarName);
                     sb.Append(strParameter);
                 }
             }
@@ -686,9 +687,9 @@ namespace Library.Facade.CodeGenerator
             {
                 string dataTypeName = CommonMethod.SqlTypeToCsharpType(item.DataType).Name;
                 if (string.IsNullOrWhiteSpace(strParameter))
-                    strParameter += string.Format("{0} {1} ", dataTypeName, item.PrivateVarName);
+                    strParameter += string.Format("{0} {1} ", CommonMethod.TypeConversion(dataTypeName), item.PrivateVarName);
                 else
-                    strParameter += string.Format(",{0} {1} ", dataTypeName, item.PrivateVarName);
+                    strParameter += string.Format(",{0} {1} ", CommonMethod.TypeConversion(dataTypeName), item.PrivateVarName);
             }
             sb.Append(strParameter);
             sb.AppendLine(")");
@@ -816,7 +817,7 @@ namespace Library.Facade.CodeGenerator
                 strParameter = string.Empty;
                 if (item.IsPrimaryKey || item.ColumnName.ToLower().IndexOf("deleted") > -1 || item.ColumnName.ToLower().IndexOf("status") > -1)
                 {
-                    strParameter += string.Format(",{0} {1} ", dataTypeName, item.PrivateVarName);
+                    strParameter += string.Format(",{0} {1} ", CommonMethod.TypeConversion(dataTypeName), item.PrivateVarName);
                     sb.Append(strParameter);
                 }
             }
@@ -891,7 +892,7 @@ namespace Library.Facade.CodeGenerator
                 strParameter = string.Empty;
                 if (item.IsPrimaryKey)
                 {
-                    strParameter += string.Format(",{0} {1} ", dataTypeName, item.PrivateVarName);
+                    strParameter += string.Format(",{0} {1} ", CommonMethod.TypeConversion(dataTypeName), item.PrivateVarName);
                     sb.Append(strParameter);
                 }
             }
@@ -1064,6 +1065,8 @@ namespace Library.Facade.CodeGenerator
             var list = gen.QueryTablesAll(out resultMsg, criteria);
             return list;
         }
+
+        
 
     }
 }

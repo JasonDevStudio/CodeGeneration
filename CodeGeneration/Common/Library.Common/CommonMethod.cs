@@ -183,14 +183,14 @@ namespace Library.Common
                 default:
                     return "DbType.Object";
             }
-        }
+        } 
 
         /// <summary>
-        /// 类型转换
+        /// 数据读取以及类型转换
         /// </summary>
-        /// <param name="sqlType"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="sqlType">数据库数据类型</param>
+        /// <param name="value">数据值</param>
+        /// <returns>转换后字符串</returns>
         public static string GetDataValueIsNotNull(string sqlType, string value)
         {
             switch (sqlType)
@@ -275,6 +275,44 @@ namespace Library.Common
 
             }
 
+        }
+
+        /// <summary>
+        /// 引用类型 转 静态类型
+        /// </summary>
+        /// <param name="typeName">类型名称</param>
+        /// <returns>string</returns>
+        public static string TypeConversion(string typeName)
+        {
+            switch (typeName)
+            {
+                case "Boolean":
+                    return "bool";
+                case "Double":
+                    return "double";
+                case "Single":
+                    return "float";
+                case "Uint32":
+                    return "uint";
+                case "Uint64":
+                    return "ulong";
+                case "Byte":
+                    return "byte";
+                case "Decimal":
+                    return "decimal";
+                case "Int64":
+                    return "long";
+                case "Int32":
+                    return "int";
+                case "Int16":
+                    return "short";
+                case "String":
+                    return "string";
+                case "Object":
+                    return "object";
+                default:
+                    return typeName;
+            }
         }
     }
 }
