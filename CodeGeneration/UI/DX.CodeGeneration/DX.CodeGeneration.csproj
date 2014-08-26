@@ -63,6 +63,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlertMsg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AlertMsg.Designer.cs">
+      <DependentUpon>AlertMsg.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -71,6 +77,15 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Wait.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Wait.Designer.cs">
+      <DependentUpon>Wait.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="AlertMsg.resx">
+      <DependentUpon>AlertMsg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -84,6 +99,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Wait.resx">
+      <DependentUpon>Wait.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -93,6 +114,27 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Library.Common\Library.Common.csproj">
+      <Project>{bca34586-8bd2-4713-9355-d728f2e4fc46}</Project>
+      <Name>Library.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Library.StringItemDict\Library.StringItemDict.csproj">
+      <Project>{396411cb-eb6f-4656-a186-3883d62b1b09}</Project>
+      <Name>Library.StringItemDict</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Facade\Library.Facade.CodeGenerator\Library.Facade.CodeGenerator.csproj">
+      <Project>{db260e2d-9bd0-4bbc-a8fb-d4287e59c27d}</Project>
+      <Name>Library.Facade.CodeGenerator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Model\Library.Models\Library.Models.csproj">
+      <Project>{fa2cc6d5-280c-47a1-b1dd-aa626e8ce72e}</Project>
+      <Name>Library.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="text_x_csharp.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
