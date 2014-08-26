@@ -58,6 +58,24 @@ namespace CodeGenerationUI
             txtDataBaseUserPwd.Text = strDataBaseUserPwd;
         }
 
+        /// <summary>
+        /// 数据库连接测试
+        /// </summary>
+        private void DBConnectionTest()
+        {
+            var strDataAccess = ConfigurationManager.AppSettings["DataAccess"];
+            var resultMsg = string.Empty;
+            CodeGenerators gen = new CodeGenerators();
+            var list = gen.QueryTablesAll(out resultMsg, strDataAccess);
+            if (string.IsNullOrWhiteSpace(resultMsg) || resultMsg.Contains(BaseDict.SuccessPrefix))
+            {
+                MessageBox.Show("连接成功!", "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(resultMsg, "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         #endregion
 
         /// <summary>
@@ -112,18 +130,7 @@ namespace CodeGenerationUI
         /// </summary> 
         private void btnConnection_Click(object sender, EventArgs e)
         {
-            string strDataAccess = ConfigurationManager.AppSettings["DataAccess"];
-            string resultMsg = string.Empty;
-            CodeGenerators gen = new CodeGenerators();
-            var list = gen.QueryTablesAll(out resultMsg, strDataAccess);
-            if (string.IsNullOrWhiteSpace(resultMsg) || resultMsg.Contains(BaseDict.SuccessPrefix))
-            {
-                MessageBox.Show("连接成功!", "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                MessageBox.Show(resultMsg, "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            DBConnectionTest();
         }
 
         /// <summary>

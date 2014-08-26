@@ -36,9 +36,11 @@
     <Reference Include="DevExpress.Data.v13.1">
       <Private>True</Private>
     </Reference>
+    <Reference Include="DevExpress.Office.v13.1.Core, Version=13.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Printing.v13.1.Core">
       <Private>True</Private>
     </Reference>
+    <Reference Include="DevExpress.RichEdit.v13.1.Core, Version=13.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Utils.v13.1">
       <Private>True</Private>
     </Reference>
@@ -51,7 +53,10 @@
     <Reference Include="DevExpress.XtraEditors.v13.1">
       <Private>True</Private>
     </Reference>
+    <Reference Include="DevExpress.XtraPrinting.v13.1, Version=13.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraRichEdit.v13.1, Version=13.1.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -63,11 +68,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlertMsg.cs">
+    <Compile Include="BaseClass.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AlertMsg.Designer.cs">
-      <DependentUpon>AlertMsg.cs</DependentUpon>
     </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -83,9 +85,6 @@
     <Compile Include="Wait.Designer.cs">
       <DependentUpon>Wait.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="AlertMsg.resx">
-      <DependentUpon>AlertMsg.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

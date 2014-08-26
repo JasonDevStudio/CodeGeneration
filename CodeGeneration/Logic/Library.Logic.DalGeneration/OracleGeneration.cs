@@ -129,7 +129,7 @@ namespace Library.Logic.DalGeneration
             }
             catch (Exception EX)
             {
-                resultMsg = string.Format("{0} {1}", BaseDict.ErrorPrefix, EX.ToString());
+                resultMsg = string.Format("{0} {1}", BaseDict.ErrorPrefix, EX.Message);
             }
             return list;
         }

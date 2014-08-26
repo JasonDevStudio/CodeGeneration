@@ -29,17 +29,19 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            DevExpress.XtraBars.Ribbon.GalleryItemGroup galleryItemGroup2 = new DevExpress.XtraBars.Ribbon.GalleryItemGroup();
-            DevExpress.XtraBars.Ribbon.GalleryItem galleryItem7 = new DevExpress.XtraBars.Ribbon.GalleryItem();
-            DevExpress.XtraBars.Ribbon.GalleryItem galleryItem8 = new DevExpress.XtraBars.Ribbon.GalleryItem();
-            DevExpress.XtraBars.Ribbon.GalleryItem galleryItem9 = new DevExpress.XtraBars.Ribbon.GalleryItem();
-            DevExpress.XtraBars.Ribbon.GalleryItem galleryItem10 = new DevExpress.XtraBars.Ribbon.GalleryItem();
-            DevExpress.XtraBars.Ribbon.GalleryItem galleryItem11 = new DevExpress.XtraBars.Ribbon.GalleryItem();
-            DevExpress.XtraBars.Ribbon.GalleryItem galleryItem12 = new DevExpress.XtraBars.Ribbon.GalleryItem();
+            DevExpress.XtraBars.Ribbon.GalleryItemGroup galleryItemGroup1 = new DevExpress.XtraBars.Ribbon.GalleryItemGroup();
+            DevExpress.XtraBars.Ribbon.GalleryItem galleryItem1 = new DevExpress.XtraBars.Ribbon.GalleryItem();
+            DevExpress.XtraBars.Ribbon.GalleryItem galleryItem2 = new DevExpress.XtraBars.Ribbon.GalleryItem();
+            DevExpress.XtraBars.Ribbon.GalleryItem galleryItem3 = new DevExpress.XtraBars.Ribbon.GalleryItem();
+            DevExpress.XtraBars.Ribbon.GalleryItem galleryItem4 = new DevExpress.XtraBars.Ribbon.GalleryItem();
+            DevExpress.XtraBars.Ribbon.GalleryItem galleryItem5 = new DevExpress.XtraBars.Ribbon.GalleryItem();
+            DevExpress.XtraBars.Ribbon.GalleryItem galleryItem6 = new DevExpress.XtraBars.Ribbon.GalleryItem();
             this.ribbonControl1 = new DevExpress.XtraBars.Ribbon.RibbonControl();
             this.backstageViewControl1 = new DevExpress.XtraBars.Ribbon.BackstageViewControl();
             this.backstageViewClientControl1 = new DevExpress.XtraBars.Ribbon.BackstageViewClientControl();
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
+            this.btnDBConfigLoad = new DevExpress.XtraEditors.SimpleButton();
+            this.btnDBConnection = new DevExpress.XtraEditors.SimpleButton();
             this.btnDBConfigSave = new DevExpress.XtraEditors.SimpleButton();
             this.txtDataBaseUserPwd = new DevExpress.XtraEditors.TextEdit();
             this.labelControl4 = new DevExpress.XtraEditors.LabelControl();
@@ -53,15 +55,14 @@
             this.backstageViewButtonItem1 = new DevExpress.XtraBars.Ribbon.BackstageViewButtonItem();
             this.backstageViewItemSeparator2 = new DevExpress.XtraBars.Ribbon.BackstageViewItemSeparator();
             this.backstageViewTabItem1 = new DevExpress.XtraBars.Ribbon.BackstageViewTabItem();
+            this.backstageViewItemSeparator3 = new DevExpress.XtraBars.Ribbon.BackstageViewItemSeparator();
+            this.bvbiClose = new DevExpress.XtraBars.Ribbon.BackstageViewButtonItem();
             this.rgbiTheme = new DevExpress.XtraBars.RibbonGalleryBarItem();
             this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonPage2 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.ribbonPageGroup2 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.colorPickEdit1 = new DevExpress.XtraEditors.ColorPickEdit();
-            this.btnDBConnection = new DevExpress.XtraEditors.SimpleButton();
-            this.backstageViewItemSeparator3 = new DevExpress.XtraBars.Ribbon.BackstageViewItemSeparator();
-            this.bvbiClose = new DevExpress.XtraBars.Ribbon.BackstageViewButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
             this.backstageViewControl1.SuspendLayout();
             this.backstageViewClientControl1.SuspendLayout();
@@ -121,6 +122,7 @@
             this.groupControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupControl1.Controls.Add(this.btnDBConfigLoad);
             this.groupControl1.Controls.Add(this.btnDBConnection);
             this.groupControl1.Controls.Add(this.btnDBConfigSave);
             this.groupControl1.Controls.Add(this.txtDataBaseUserPwd);
@@ -137,12 +139,36 @@
             this.groupControl1.TabIndex = 2;
             this.groupControl1.Text = "数据库连接设置";
             // 
+            // btnDBConfigLoad
+            // 
+            this.btnDBConfigLoad.Appearance.Options.UseTextOptions = true;
+            this.btnDBConfigLoad.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
+            this.btnDBConfigLoad.Image = ((System.Drawing.Image)(resources.GetObject("btnDBConfigLoad.Image")));
+            this.btnDBConfigLoad.Location = new System.Drawing.Point(19, 315);
+            this.btnDBConfigLoad.Name = "btnDBConfigLoad";
+            this.btnDBConfigLoad.Size = new System.Drawing.Size(60, 23);
+            this.btnDBConfigLoad.TabIndex = 11;
+            this.btnDBConfigLoad.Text = "加载";
+            this.btnDBConfigLoad.Click += new System.EventHandler(this.btnDBConfigLoad_Click);
+            // 
+            // btnDBConnection
+            // 
+            this.btnDBConnection.Appearance.Options.UseTextOptions = true;
+            this.btnDBConnection.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
+            this.btnDBConnection.Image = ((System.Drawing.Image)(resources.GetObject("btnDBConnection.Image")));
+            this.btnDBConnection.Location = new System.Drawing.Point(184, 315);
+            this.btnDBConnection.Name = "btnDBConnection";
+            this.btnDBConnection.Size = new System.Drawing.Size(60, 23);
+            this.btnDBConnection.TabIndex = 10;
+            this.btnDBConnection.Text = "连接";
+            this.btnDBConnection.Click += new System.EventHandler(this.btnDBConnection_Click);
+            // 
             // btnDBConfigSave
             // 
             this.btnDBConfigSave.Appearance.Options.UseTextOptions = true;
             this.btnDBConfigSave.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
             this.btnDBConfigSave.Image = ((System.Drawing.Image)(resources.GetObject("btnDBConfigSave.Image")));
-            this.btnDBConfigSave.Location = new System.Drawing.Point(19, 315);
+            this.btnDBConfigSave.Location = new System.Drawing.Point(102, 315);
             this.btnDBConfigSave.Name = "btnDBConfigSave";
             this.btnDBConfigSave.Size = new System.Drawing.Size(60, 23);
             this.btnDBConfigSave.TabIndex = 9;
@@ -202,15 +228,14 @@
             // 
             // rgpDataType
             // 
-            this.rgpDataType.EditValue = "SqlServer";
             this.rgpDataType.Location = new System.Drawing.Point(19, 60);
             this.rgpDataType.MenuManager = this.ribbonControl1;
             this.rgpDataType.Name = "rgpDataType";
             this.rgpDataType.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             this.rgpDataType.Properties.Columns = 2;
             this.rgpDataType.Properties.Items.AddRange(new DevExpress.XtraEditors.Controls.RadioGroupItem[] {
-            new DevExpress.XtraEditors.Controls.RadioGroupItem("SqlServer", "SqlServer"),
-            new DevExpress.XtraEditors.Controls.RadioGroupItem("Oracle", "Oracle")});
+            new DevExpress.XtraEditors.Controls.RadioGroupItem("SqlServerDataAccess", "SQL Server"),
+            new DevExpress.XtraEditors.Controls.RadioGroupItem("OracleDataAccess", "Oracle")});
             this.rgpDataType.Size = new System.Drawing.Size(256, 34);
             this.rgpDataType.TabIndex = 2;
             // 
@@ -245,38 +270,49 @@
             this.backstageViewTabItem1.Name = "backstageViewTabItem1";
             this.backstageViewTabItem1.Selected = true;
             // 
+            // backstageViewItemSeparator3
+            // 
+            this.backstageViewItemSeparator3.Name = "backstageViewItemSeparator3";
+            // 
+            // bvbiClose
+            // 
+            this.bvbiClose.Caption = "关闭";
+            this.bvbiClose.Glyph = ((System.Drawing.Image)(resources.GetObject("bvbiClose.Glyph")));
+            this.bvbiClose.Name = "bvbiClose";
+            this.bvbiClose.ItemClick += new DevExpress.XtraBars.Ribbon.BackstageViewItemEventHandler(this.bvbiClose_ItemClick);
+            // 
             // rgbiTheme
             // 
             this.rgbiTheme.Caption = "ribbonGalleryBarItem1";
             // 
             // 
             // 
-            galleryItemGroup2.Caption = "Group1";
-            galleryItem7.Caption = "Office 2013";
-            galleryItem7.Image = ((System.Drawing.Image)(resources.GetObject("galleryItem7.Image")));
-            galleryItem7.Value = "Office 2013";
-            galleryItem8.Caption = "Office 2013 Black";
-            galleryItem8.Image = ((System.Drawing.Image)(resources.GetObject("galleryItem8.Image")));
-            galleryItem8.Value = "Office 2013 Black";
-            galleryItem9.Caption = "Office 2010 Black";
-            galleryItem9.Image = ((System.Drawing.Image)(resources.GetObject("galleryItem9.Image")));
-            galleryItem9.Value = "Office 2010 Black";
-            galleryItem10.Caption = "Office 2010 Blue";
-            galleryItem10.Image = ((System.Drawing.Image)(resources.GetObject("galleryItem10.Image")));
-            galleryItem10.Value = "Office 2010 Blue";
-            galleryItem11.Caption = "Seven Classic";
-            galleryItem11.Image = ((System.Drawing.Image)(resources.GetObject("galleryItem11.Image")));
-            galleryItem11.Value = "Seven Classic";
-            galleryItem12.Caption = "Item6";
-            galleryItemGroup2.Items.AddRange(new DevExpress.XtraBars.Ribbon.GalleryItem[] {
-            galleryItem7,
-            galleryItem8,
-            galleryItem9,
-            galleryItem10,
-            galleryItem11,
-            galleryItem12});
+            galleryItemGroup1.Caption = "Group1";
+            galleryItem1.Caption = "Office 2013";
+            galleryItem1.Image = ((System.Drawing.Image)(resources.GetObject("galleryItem1.Image")));
+            galleryItem1.Value = "Office 2013";
+            galleryItem2.Caption = "Office 2013 Black";
+            galleryItem2.Image = ((System.Drawing.Image)(resources.GetObject("galleryItem2.Image")));
+            galleryItem2.Value = "Office 2013 Black";
+            galleryItem3.Caption = "Office 2010 Black";
+            galleryItem3.Image = ((System.Drawing.Image)(resources.GetObject("galleryItem3.Image")));
+            galleryItem3.Value = "Office 2010 Black";
+            galleryItem4.Caption = "Office 2010 Blue";
+            galleryItem4.Image = ((System.Drawing.Image)(resources.GetObject("galleryItem4.Image")));
+            galleryItem4.Value = "Office 2010 Blue";
+            galleryItem5.Caption = "Seven Classic";
+            galleryItem5.Image = ((System.Drawing.Image)(resources.GetObject("galleryItem5.Image")));
+            galleryItem5.Value = "Seven Classic";
+            galleryItem6.Caption = "Item6";
+            galleryItemGroup1.Items.AddRange(new DevExpress.XtraBars.Ribbon.GalleryItem[] {
+            galleryItem1,
+            galleryItem2,
+            galleryItem3,
+            galleryItem4,
+            galleryItem5,
+            galleryItem6});
             this.rgbiTheme.Gallery.Groups.AddRange(new DevExpress.XtraBars.Ribbon.GalleryItemGroup[] {
-            galleryItemGroup2});
+            galleryItemGroup1});
             this.rgbiTheme.Gallery.ImageSize = new System.Drawing.Size(10, 0);
             this.rgbiTheme.Gallery.ShowItemText = true;
             this.rgbiTheme.Id = 1;
@@ -321,40 +357,20 @@
             this.colorPickEdit1.Size = new System.Drawing.Size(100, 20);
             this.colorPickEdit1.TabIndex = 0;
             // 
-            // btnDBConnection
-            // 
-            this.btnDBConnection.Appearance.Options.UseTextOptions = true;
-            this.btnDBConnection.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
-            this.btnDBConnection.Image = ((System.Drawing.Image)(resources.GetObject("btnDBConnection.Image")));
-            this.btnDBConnection.Location = new System.Drawing.Point(101, 315);
-            this.btnDBConnection.Name = "btnDBConnection";
-            this.btnDBConnection.Size = new System.Drawing.Size(60, 23);
-            this.btnDBConnection.TabIndex = 10;
-            this.btnDBConnection.Text = "连接";
-            this.btnDBConnection.Click += new System.EventHandler(this.btnDBConnection_Click);
-            // 
-            // backstageViewItemSeparator3
-            // 
-            this.backstageViewItemSeparator3.Name = "backstageViewItemSeparator3";
-            // 
-            // bvbiClose
-            // 
-            this.bvbiClose.Caption = "关闭";
-            this.bvbiClose.Glyph = ((System.Drawing.Image)(resources.GetObject("bvbiClose.Glyph")));
-            this.bvbiClose.Name = "bvbiClose";
-            this.bvbiClose.ItemClick += new DevExpress.XtraBars.Ribbon.BackstageViewItemEventHandler(this.bvbiClose_ItemClick);
-            // 
             // MainForm
             // 
             this.AllowFormGlass = DevExpress.Utils.DefaultBoolean.False;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 994);
+            this.ClientSize = new System.Drawing.Size(884, 1021);
             this.Controls.Add(this.backstageViewControl1);
             this.Controls.Add(this.ribbonControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Ribbon = this.ribbonControl1;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "R";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).EndInit();
             this.backstageViewControl1.ResumeLayout(false);
             this.backstageViewClientControl1.ResumeLayout(false);
@@ -398,6 +414,7 @@
         private DevExpress.XtraEditors.SimpleButton btnDBConnection;
         private DevExpress.XtraBars.Ribbon.BackstageViewItemSeparator backstageViewItemSeparator3;
         private DevExpress.XtraBars.Ribbon.BackstageViewButtonItem bvbiClose;
+        private DevExpress.XtraEditors.SimpleButton btnDBConfigLoad;
     }
 }
 
